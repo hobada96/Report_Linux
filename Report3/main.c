@@ -46,16 +46,6 @@ int dbcreate(int argc, char *argv[]){
 	int fd;
 	struct student rec;
 
-	if(argc < 2){
-		fprintf(stderr, "사용법 : %s file\n",argv[0]);
-		exit(1);
-	}
-	
-	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
-		perror(argv[1]);
-		exit(2);
-	}
-	
 	printf("%9s %-8s %-4s","학번","이름","점수");
 	while(scanf("%d %s %d", &rec.id, rec.name, &rec.score) == 3){
 		lseek(fd,(rec.id - START_ID) * sizeof(rec), SEEK_SET);
@@ -70,16 +60,6 @@ int dqupdate(int argc, char *argv[])
     	int fd, id;
 	char c;
 	struct student rec;
-
-	if(argc < 2){
-		fprintf(stderr, "사용법 : %s file\n",argv[0]);
-		exit(1);
-	}
-	
-	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
-		perror(argv[1]);
-		exit(2);
-	}
 
 	do{
 		printf("\n수정할 학생의 학번을 입력:");
@@ -109,16 +89,7 @@ int dbquery(int argc, char *argv[])
 	char c;
 	struct student rec;
 
-	if(argc < 2){
-		fprintf(stderr, "사용법 : %s file\n",argv[0]);
-		exit(1);
-	}
 
-	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
-		perror(argv[1]);
-		exit(2);
-	}
-	
 	do{
 		printf("\n검색할 학생의 학번을 입력:");
 		if(scanf("%d", &id) == 1){
