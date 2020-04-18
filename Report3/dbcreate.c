@@ -4,28 +4,26 @@
 #include <fcntl.h>
 #include "student.h"
 
-/* ÇĞ»ı Á¤º¸¸¦ ÀÔ·Â¹Ş¾Æ µ¥ÀÌÅÍº£ÀÌ½º ÆÄÀÏ¿¡ ÀúÀåÇÑ´Ù. */
-int main(int argc, char *argv[])
+int main(int argc,char *argv[])
 {
-    int fd;
-    struct student rec;
+	int fd;
+	struct student rec;
 
-    if (argc < 2) {
-        fprintf(stderr,  "»ç¿ë¹ı : %s file\n", argv[0]);
-        exit(1);
-    }
-
-    if ((fd = open(argv[1],O_WRONLY |O_CREAT, 0640))==-1) {
-        perror(argv[1]);
-        exit(2);
-    }
-
-    printf("%-9s %-8s %-4s", "ÇĞ¹ø",  "ÀÌ¸§",  "Á¡¼ö"); 
-    while (scanf("%d %s %d", &rec.id, rec.name, &rec.score) ==  3) {
-        lseek(fd, (rec.id - START_ID) * sizeof(rec), SEEK_SET);
-        write(fd, &rec, sizeof(rec) );
-    }
-
-    close(fd);
-    exit(0);
+	if(argc < 2){
+		fprintf(stderr, "ì‚¬ìš©ë²• : %s file\n",argv[0]);
+		exit(1);
+	}
+	
+	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
+		perror(argv[1]);
+		exit(2);
+	}
+	
+	printf("%9s %-8s %-4s","í•™ë²ˆ","ì´ë¦„","ì ìˆ˜");
+	while(scanf("%d %s %d", &rec.id, rec.name, &rec.score) == 3){
+		lseek(fd,(rec.id - START_ID) * sizeof(rec), SEEK_SET);
+		write(fd,&rec,sizeof(rec));	
+	}
+	close(fd);
+	exit(0);
 }

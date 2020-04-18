@@ -4,38 +4,34 @@
 #include <fcntl.h>
 #include "student.h"
 
-/* ÇĞ¹øÀ» ÀÔ·Â¹Ş¾Æ ÇØ´ç ÇĞ»ıÀÇ ·¹ÄÚµå¸¦ ÆÄÀÏ¿¡¼­ ÀĞ¾î Ãâ·ÂÇÑ´Ù. */
 int main(int argc, char *argv[])
 {
-    int fd, id;
-    char c;
-    struct student rec;
+	int fd,id;
+	char c;
+	struct student rec;
 
-   if (argc < 2) {
-        fprintf(stderr,  "»ç¿ë¹ı : %s file\n", argv[0]);
-        exit(1);
-   }
+	if(argc < 2){
+		fprintf(stderr, "ì‚¬ìš©ë²• : %s file\n",argv[0]);
+		exit(1);
+	}
 
-   if ((fd = open(argv[1], O_RDONLY)) == -1) {
-        perror(argv[1]);
-        exit(2);
-    }
-
-    do {
-        printf("\n°Ë»öÇÒ ÇĞ»ıÀÇ ÇĞ¹ø ÀÔ·Â:");
-        if (scanf("%d", &id) == 1) {
-            lseek(fd, (id-START_ID)*sizeof(rec), SEEK_SET);
-            if ((read(fd, &rec, sizeof(rec)) > 0) && (rec.id != 0)) 
-                printf("ÇĞ¹ø:%d\t ÀÌ¸§:%s\t Á¡¼ö:%d\n", 
-                        rec.id, rec.name, rec.score);
-            else printf("·¹ÄÚµå %d ¾øÀ½\n", id);
-        }
-        else printf("ÀÔ·Â ¿À·ù"); 
-
-        printf("°è¼ÓÇÏ°Ú½À´Ï±î?(Y/N)");
-        scanf(" %c", &c);
-    } while (c == 'Y');
-   
-    close(fd);
-    exit(0);
+	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
+		perror(argv[1]);
+		exit(2);
+	}
+	
+	do{
+		printf("\nê²€ìƒ‰í•  í•™ìƒì˜ í•™ë²ˆì„ ì…ë ¥:");
+		if(scanf("%d", &id) == 1){
+			lseek(fd,(id-START_ID)*sizeof(rec),SEEK_SET);
+			if((read(fd,&rec,sizeof(rec))>0) && (rec.id!= 0))
+				printf("í•™ë²ˆ:%d\tì´ë¦„:%s\tì ìˆ˜:%d\n",rec.id,rec.name,rec.score);
+			else printf("ë ˆì½”ë“œ %d ì—†ìŒ\n",id);
+		}
+		else printf("ì…ë ¥ì˜¤ë¥˜");
+		printf("ê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ?(Y/N)");
+		scanf("%c",&c);
+	} while(c == 'Y');
+	close(fd);
+	exit(0);
 }

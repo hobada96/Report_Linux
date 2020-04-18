@@ -4,43 +4,40 @@
 #include <fcntl.h>
 #include "student.h"
 
-/* ÇĞ¹øÀ» ÀÔ·Â¹Ş¾Æ ÇØ´ç ÇĞ»ı ·¹ÄÚµå¸¦ ¼öÁ¤ÇÑ´Ù. */
-int main(int argc, char *argv[])
+int main(int argc,char *argv[])
 {
-    int fd, id;
-    char c;
-    struct student rec;
+	int fd, id;
+	char c;
+	struct student rec;
 
-    if (argc < 2) {
-        fprintf(stderr,  "»ç¿ë¹ı : %s file\n", argv[0]);
-        exit(1);
-    }
+	if(argc < 2){
+		fprintf(stderr, "ì‚¬ìš©ë²• : %s file\n",argv[0]);
+		exit(1);
+	}
+	
+	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
+		perror(argv[1]);
+		exit(2);
+	}
 
-    if ((fd = open(argv[1], O_RDWR)) == -1) {
-        perror(argv[1]);
-        exit(2);
-    }
-
-    do {
-        printf("¼öÁ¤ÇÒ ÇĞ»ıÀÇ ÇĞ¹ø ÀÔ·Â: ");
-        if (scanf("%d", &id) == 1) {
-            lseek(fd,  (long) (id-START_ID)*sizeof(rec), SEEK_SET);
-            if ((read(fd, &rec, sizeof(rec)) > 0) && (rec.id != 0)) {
-                printf("ÇĞ¹ø:%8d\t ÀÌ¸§:%4s\t Á¡¼ö:%4d\n", 
-                       rec.id, rec.name, rec.score);
-           printf("»õ·Î¿î Á¡¼ö: ");
-           scanf("%d", &rec.score);
-                lseek(fd, (long) -sizeof(rec), SEEK_CUR);
-                write(fd, &rec, sizeof(rec));
-            }
-            else printf("·¹ÄÚµå %d ¾øÀ½\n", id);
-        }
-        else printf("ÀÔ·Â¿À·ù\n");
-        printf("°è¼ÓÇÏ°Ú½À´Ï±î?(Y/N)");
-        scanf(" %c",&c);
-    } while (c == 'Y');
-
-    close(fd);
-    exit(0);
+	do{
+		printf("\nìˆ˜ì •í•  í•™ìƒì˜ í•™ë²ˆì„ ì…ë ¥:");
+		if(scanf("%d", &id) == 1){
+			lseek(fd,(id-START_ID)*sizeof(rec),SEEK_SET);
+			if((read(fd,&rec,sizeof(rec))>0) && (rec.id!= 0))
+			{
+				printf("í•™ë²ˆ:%d\tì´ë¦„:%s\tì ìˆ˜:%d\n",rec.id,rec.name,rec.score);
+				printf("ìƒˆë¡œìš´ ì ìˆ˜: ");
+				scanf("%d",&rec.score);
+				lseek(fd,(long)-sizeof(rec),SEEK_CUR);
+				write(fd,&rec,sizeof(rec));
+			}
+			else printf("ë ˆì½”ë“œ %d ì—†ìŒ\n",id);
+		}
+		else printf("ì…ë ¥ì˜¤ë¥˜\n");
+		printf("ê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ?(Y/N)");
+		scanf("%c",&c);
+	} while(c == 'Y');
+	close(fd);
+	exit(0);
 }
-
