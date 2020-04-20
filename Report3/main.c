@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 {
 	int fd,select;
 	if(argc < 2){
-		fprintf(stderr, "ì‚¬ìš©ë²• : %s file\n",argv[0]);
+		fprintf(stderr, "»ç¿ë¹ı : %s file\n",argv[0]);
 		exit(1);
 	}
 	
@@ -21,87 +21,123 @@ int main(int argc, char *argv[])
 		perror(argv[1]);
 		exit(2);
 	}
-
+	close(fd);
+	
 	while((select = menu_display())!= 0)
 	{
 		if(select == 1) dbcreate(argc,argv);
 		else if (select == 2) dbquery(argc,argv);
 		else if (select == 3) dqupdate(argc,argv);
-		else printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ì¬ì…ë ¥ í•´ì£¼ì„¸ìš”");
+		else printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ÀçÀÔ·Â ÇØÁÖ¼¼¿ä");
 	}
 }
 
 
 int menu_display(){
 	int select = 0;
-	printf("1.db ìƒì„±");
-	printf("2.db ì§ˆì˜");
-	printf("3.db ê°±ì‹ ");
-	printf("0. ì¢…ë£Œ");
+	printf("1.db »ı¼º");
+	printf("2.db ÁúÀÇ");
+	printf("3.db °»½Å");
+	printf("0. Á¾·á");
 	scanf("%d",&select);
 	return select;
 }
 
 int dbcreate(int argc, char *argv[]){
-	int fd;
 	struct student rec;
-
-	printf("%9s %-8s %-4s","í•™ë²ˆ","ì´ë¦„","ì ìˆ˜");
+	int fd;
+	
+	if(argc < 2){
+		fprintf(stderr, "»ç¿ë¹ı : %s file\n",argv[0]);
+		exit(1);
+	}
+	
+	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
+		perror(argv[1]);
+		exit(2);
+	}
+	
+	printf("%9s %-8s %-4s","ÇĞ¹ø","ÀÌ¸§","Á¡¼ö");
 	while(scanf("%d %s %d", &rec.id, rec.name, &rec.score) == 3){
 		lseek(fd,(rec.id - START_ID) * sizeof(rec), SEEK_SET);
-		write(fd,&rec,sizeof(rec));	
+		write(fd,&rec,sizeof(rec));
+		printf("%d--------- %s ------------%d------------------",rec.id,rec.name,rec.score);
+		break;
 	}
 	close(fd);
-	exit(0);
+	return 0;
 }
 
 int dqupdate(int argc, char *argv[])
 {
-    	int fd, id;
-	char c;
+    int fd, id;
+	char c = 0;
 	struct student rec;
 
+	if(argc < 2){
+		fprintf(stderr, "»ç¿ë¹ı : %s file\n",argv[0]);
+		exit(1);
+	}
+	
+	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
+		perror(argv[1]);
+		exit(2);
+	}
+	
 	do{
-		printf("\nìˆ˜ì •í•  í•™ìƒì˜ í•™ë²ˆì„ ì…ë ¥:");
+		printf("\n¼öÁ¤ÇÒ ÇĞ»ıÀÇ ÇĞ¹øÀ» ÀÔ·Â:");
 		if(scanf("%d", &id) == 1){
 			lseek(fd,(id-START_ID)*sizeof(rec),SEEK_SET);
 			if((read(fd,&rec,sizeof(rec))>0) && (rec.id!= 0))
 			{
-				printf("í•™ë²ˆ:%d\tì´ë¦„:%s\tì ìˆ˜:%d\n",rec.id,rec.name,rec.score);
-				printf("ìƒˆë¡œìš´ ì ìˆ˜: ");
+				printf("ÇĞ¹ø:%d\tÀÌ¸§:%s\tÁ¡¼ö:%d\n",rec.id,rec.name,rec.score);
+				printf("»õ·Î¿î Á¡¼ö: ");
 				scanf("%d",&rec.score);
 				lseek(fd,(long)-sizeof(rec),SEEK_CUR);
 				write(fd,&rec,sizeof(rec));
 			}
-			else printf("ë ˆì½”ë“œ %d ì—†ìŒ\n",id);
+			else printf("·¹ÄÚµå %d ¾øÀ½\n",id);
 		}
-		else printf("ì…ë ¥ì˜¤ë¥˜\n");
-		printf("ê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ?(Y/N)");
+		else printf("ÀÔ·Â¿À·ù\n");
+		printf("°è¼ÓÇÏ½Ã°Ú½À´Ï±î?(Y/N)");
+		fflush(stdin); 
 		scanf("%c",&c);
 	} while(c == 'Y');
+	
 	close(fd);
-	exit(0);
+	return 0;
 }
 
 int dbquery(int argc, char *argv[])
 {
-    	int fd,id;
-	char c;
+    int fd,id;
+	char c = 0;
 	struct student rec;
 
-
+	if(argc < 2){
+		fprintf(stderr, "»ç¿ë¹ı : %s file\n",argv[0]);
+		exit(1);
+	}
+	
+	if((fd = open(argv[1],O_WRONLY|O_CREAT,0640)) == -1){
+		perror(argv[1]);
+		exit(2);
+	}
+	
 	do{
-		printf("\nê²€ìƒ‰í•  í•™ìƒì˜ í•™ë²ˆì„ ì…ë ¥:");
+		printf("\n°Ë»öÇÒ ÇĞ»ıÀÇ ÇĞ¹øÀ» ÀÔ·Â:");
 		if(scanf("%d", &id) == 1){
 			lseek(fd,(id-START_ID)*sizeof(rec),SEEK_SET);
 			if((read(fd,&rec,sizeof(rec))>0) && (rec.id!= 0))
-				printf("í•™ë²ˆ:%d\tì´ë¦„:%s\tì ìˆ˜:%d\n",rec.id,rec.name,rec.score);
-			else printf("ë ˆì½”ë“œ %d ì—†ìŒ\n",id);
+				printf("ÇĞ¹ø:%d\tÀÌ¸§:%s\tÁ¡¼ö:%d\n",rec.id,rec.name,rec.score);
+			else printf("·¹ÄÚµå %d ¾øÀ½\n",id);
 		}
-		else printf("ì…ë ¥ì˜¤ë¥˜");
-		printf("ê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ?(Y/N)");
+		else printf("ÀÔ·Â¿À·ù");
+		fflush(stdin);
+		printf("°è¼ÓÇÏ½Ã°Ú½À´Ï±î?(Y/N)");
 		scanf("%c",&c);
 	} while(c == 'Y');
 	close(fd);
-	exit(0);
+	return 0;
 }
+
