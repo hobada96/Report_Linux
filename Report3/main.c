@@ -61,7 +61,6 @@ int dbcreate(int argc, char *argv[]){
 	while(scanf("%d %s %d", &rec.id, rec.name, &rec.score) == 3){
 		lseek(fd,(rec.id - START_ID) * sizeof(rec), SEEK_SET);
 		write(fd,&rec,sizeof(rec));
-		printf("%d--------- %s ------------%d------------------",rec.id,rec.name,rec.score);
 		break;
 	}
 	close(fd);
