@@ -1,0 +1,6 @@
+#!/bin/bash
+clear
+echo The time and date are:
+date
+echo Display Directory list:
+ls
